@@ -111,7 +111,9 @@ def gen_masks(paths, run_config_initial, demo, logger, config_name, args):
             class_name = demo.metadata.stuff_classes[predicted_class_idx]
             input_img_name = path
             if 1 or class_name in args.categories_to_extract:
-                save_dir = Path(args.output) / config_name / os.path.basename(input_img_name)
+                save_dir = (
+                    Path(args.output) / config_name / os.path.basename(input_img_name)
+                )
 
                 if not os.path.isdir(save_dir):
                     os.makedirs(save_dir)
@@ -156,7 +158,7 @@ if __name__ == "__main__":
     with open(path_to_data_config, "r") as f:
         input_img_paths = f.readlines()
 
-    base_dir = Path("/media/master/wext/cv_data/kitti-full")
+    base_dir = Path("/path/to/kitti-full")
     input_img_paths = [str(base_dir / p.strip()) for p in input_img_paths]
     print(len(input_img_paths))
     # args.input = [input_img_paths[0]]
@@ -222,7 +224,9 @@ if __name__ == "__main__":
                 run_config["detected_categories"]["img2class"][k]["num_objects"] += v[
                     "num_objects"
                 ]
-                run_config["detected_categories"]["img2class"][k]["object_classes"].extend(v["object_classes"])
+                run_config["detected_categories"]["img2class"][k][
+                    "object_classes"
+                ].extend(v["object_classes"])
 
     run_config["detected_categories"]["class2img"] = {
         k: v
@@ -235,5 +239,9 @@ if __name__ == "__main__":
     for mapping in ["img2class", "class2img"]:
         with open(os.path.join(save_dir, f"{mapping}.json"), "w") as f:
             json.dump(
-                {"file_paths_config_name": config_name, mapping: run_config["detected_categories"][mapping]}, f
+                {
+                    "file_paths_config_name": config_name,
+                    mapping: run_config["detected_categories"][mapping],
+                },
+                f,
             )
